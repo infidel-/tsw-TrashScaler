@@ -1,11 +1,8 @@
-import com.GameInterface.Game.Character;
-import com.GameInterface.Quest;
-import com.GameInterface.QuestTask;
-import com.GameInterface.Quests;
 import com.GameInterface.UtilsBase;
+import com.GameInterface.DistributedValue;
 import com.Utils.LDBFormat;
 import com.Utils.Point;
- 
+
 
 class TrashScaler
 {
@@ -16,6 +13,8 @@ class TrashScaler
 	public static var isDrag: Boolean;
 	public static var xDrag: Number;
 	public static var yDrag: Number;
+	public static var btnMinimize: MovieClip;
+	public static var textMinimize: TextField;
 	
 	public static var windows: Array;
 	
@@ -23,16 +22,28 @@ class TrashScaler
     {
 		isDrag = false;
 		windows = new Array();
-		
+
 		cont = swfRoot.createEmptyMovieClip("trashScalerContainer",
 			swfRoot.getNextHighestDepth());
 		var tt = cont.createTextField("trashScalerText", 
 			cont.getNextHighestDepth(), 0, 0, 300, 200);
 		var t: TextField = tt;
-		cont._x = (Stage.width - cont._width) / 2;
-		cont._y = (Stage.height - cont._height) / 2;
 		cont.backgroundColor = 0x000000;
 		cont.background = true;
+
+		// set stored window x,y
+		var xval:DistributedValue = DistributedValue.Create("TrashScaler.x");
+		var x = 0;
+		if (xval.GetValue() == -1)
+			x = (Stage.width - cont._width) / 2;
+		else x = xval.GetValue();
+		var yval:DistributedValue = DistributedValue.Create("TrashScaler.y");
+		var y = 0;
+		if (yval.GetValue() == -1)
+			y = (Stage.height - cont._height) / 2;
+		else y = yval.GetValue();
+		cont._x = x;
+		cont._y = y;
 /*
 		cont.beginFill(0xFF0000);
 		UtilsBase.PrintChatText("" + cont._width);		
@@ -54,6 +65,11 @@ class TrashScaler
 		t.background = true;
 		textField = t;
 		
+		// set visibility
+		var visval:DistributedValue = DistributedValue.Create("TrashScaler.minimized");
+		var vis = visval.GetValue();
+		textField._visible = vis;
+		
 		// text format
 		var format:TextFormat = new TextFormat(
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
@@ -68,7 +84,9 @@ class TrashScaler
 		// init scaler items
 		var windowTemplates = new Array(
 			{ id: 'achievement', name: 'Achievements and Lore' },
-			{ id: 'missionjournalwindow', name: 'Mission Journal' }
+			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
+			{ id: 'missionjournalwindow', name: 'Mission Journal' },
+			{ id: 'missionrewardcontroller', name: 'Mission Rewards' }
 		);
 		for (var i: Number = 0; i < windowTemplates.length; i++)
 		{
@@ -79,7 +97,7 @@ class TrashScaler
 				cont.getNextHighestDepth(), 0, 0, 80, 20);
 			var tf: TextField = ttf;
 			tf._x = 40;
-			tf._y = i * 22;
+			tf._y = i * 21;
 			tf._alpha = 80;
 			tf.autoSize = "left";
 			tf.html = true;
@@ -88,23 +106,33 @@ class TrashScaler
 			tf.background = true;
 			tf.setNewTextFormat(format);
 			tf._width = tf.textWidth;
+			tf._visible = vis;
 
 			// create all buttons
 			var btnScaleDown = createButton(tpl.id + 'BtnScaleDown', '-',
-				5, i * 22);
+				5, i * 21);
 			var btnScaleUp = createButton(tpl.id + 'BtnScaleUp', '+',
-				21, i * 22);
+				21, i * 21);
+			btnScaleDown._visible = vis;
+			btnScaleUp._visible = vis;
+
+			// init object
+			var val:DistributedValue = DistributedValue.Create("TrashScaler." + tpl.id);
 			var w = {
 				id: tpl.id,
 				name: tpl.name,
 				btnDown: btnScaleDown,
 				btnUp: btnScaleUp,
-				scale: 100,
+				scale: val.GetValue(),
 				textField: tf
 			};
 			tf.text = w.name + ': ' + w.scale;
 			windows.push(w);
 		}
+		
+		// minimize button
+		btnMinimize = createButton('btnMinimize',
+			(vis ? 'MINIMIZE' : 'TRS'), 100, windows.length * 21);
 		
 		// mouse events
 		cont.onRelease = onRelease;
@@ -133,12 +161,17 @@ class TrashScaler
 		t.setNewTextFormat(textFormatButton);
 		t.text = s;
 		
+		if (name == 'btnMinimize')
+			textMinimize = t;
+		
 		return btn;
 	}
 	
 	
+	// check for button presses
 	static function onPressButton(): Boolean
 	{
+		// check if any buttons are pressed
 		for (var i: Number = 0; i < windows.length; i++)
 		{
 			var w = windows[i];
@@ -146,6 +179,8 @@ class TrashScaler
 			{
 				w.scale += 10;
 				w.textField.text = w.name + ': ' + w.scale;
+				var val:DistributedValue = DistributedValue.Create("TrashScaler." + w.id);
+				val.SetValue(w.scale);
 //				UtilsBase.PrintChatText("UP " + w.id);
 				return true;
 			}
@@ -158,6 +193,26 @@ class TrashScaler
 				return true;
 			}
 		}
+
+		// minimize button
+		if (btnMinimize.hitTest(_root._xmouse, _root._ymouse, true))
+		{
+			var val:DistributedValue = DistributedValue.Create("TrashScaler.minimized");
+			val.SetValue(!val.GetValue());
+			var vis = val.GetValue();
+			
+			for (var i: Number = 0; i < windows.length; i++)
+			{
+				var w = windows[i];
+				w.btnUp._visible = vis;
+				w.btnDown._visible = vis;
+				w.textField._visible = vis;
+			}
+			textField._visible = vis;
+			textMinimize.text = (vis ? 'MINIMIZE' : 'TRS');
+
+			return true;
+		}
 		
 		return false;
 	}
@@ -165,10 +220,6 @@ class TrashScaler
 	// pressing window and buttons
 	function onPress()
 	{
-		// check for button presses
-		if (onPressButton())
-			return;
-		
 		// start dragging
 		isDrag = true;
 		xDrag = cont._xmouse;
@@ -188,7 +239,16 @@ class TrashScaler
 	// stop dragging
 	function onRelease()
 	{
+		// check for button presses
+		onPressButton();
+
 		isDrag = false;
+
+		// save window x,y
+		var xval:DistributedValue = DistributedValue.Create("TrashScaler.x");
+		var yval:DistributedValue = DistributedValue.Create("TrashScaler.y");
+		xval.SetValue(cont._x);
+		yval.SetValue(cont._y);
 	}
    
 	// rescale all windows
@@ -199,18 +259,6 @@ class TrashScaler
 			var w = windows[i];
 			_root[w.id]._xscale = w.scale;
 			_root[w.id]._yscale = w.scale;
-		}
-		if (_root.computerpuzzle)
-		{
-			_root.computerpuzzle._xscale=150;
-			_root.computerpuzzle._yscale=150;
-		}
-		if (_root.missionrewardcontroller)
-		{
-			_root.missionrewardcontroller._xscale=170;
-			_root.missionrewardcontroller._yscale = 170;
-			_root.missionrewardcontroller._x = (Stage.width - _root.missionrewardcontroller._width) / 2;
-			_root.missionrewardcontroller._y = (Stage.height - _root.missionrewardcontroller._height) / 2;
 		}
 	}
 	

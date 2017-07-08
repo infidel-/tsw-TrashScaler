@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
 <Root>
   <Value name="TrashScaler" value="true" />
+  <Value name="TrashScaler.x" value="-1" />
+  <Value name="TrashScaler.y" value="-1" />
+  <Value name="TrashScaler.minimized" value="false" />
+  <Value name="TrashScaler.achievement" value="100" />
+  <Value name="TrashScaler.computerpuzzle" value="100" />
+  <Value name="TrashScaler.missionjournalwindow" value="100" />
+  <Value name="TrashScaler.missionrewardcontroller" value="100" />
+	
   <Archive name="TrashScaler_Cfg" />
 </Root>
