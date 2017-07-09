@@ -257,6 +257,17 @@ class TrashScaler
 		for (var i: Number = 0; i < windows.length; i++)
 		{
 			var w = windows[i];
+
+			// skip unopened windows
+			if (_root[w.id] == null || _root[w.id]._xscale == null)
+				continue;
+
+			// do not scale if it's already scaled correctly
+			// just in case low-level API does not catch that
+			if (_root[w.id]._xscale == w.scale &&
+				_root[w.id]._yscale == w.scale)
+				continue;
+
 			_root[w.id]._xscale = w.scale;
 			_root[w.id]._yscale = w.scale;
 		}
