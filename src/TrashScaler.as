@@ -26,7 +26,7 @@ class TrashScaler
 		cont = swfRoot.createEmptyMovieClip("trashScalerContainer",
 			swfRoot.getNextHighestDepth());
 		var tt = cont.createTextField("trashScalerText", 
-			cont.getNextHighestDepth(), 0, 0, 300, 200);
+			cont.getNextHighestDepth(), 0, 0, 310, 200);
 		var t: TextField = tt;
 		cont.backgroundColor = 0x000000;
 		cont.background = true;
@@ -86,7 +86,8 @@ class TrashScaler
 			{ id: 'achievement', name: 'Achievements and Lore' },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
 			{ id: 'missionjournalwindow', name: 'Mission Journal' },
-			{ id: 'missionrewardcontroller', name: 'Mission Rewards' }
+			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
+			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' }
 		);
 		for (var i: Number = 0; i < windowTemplates.length; i++)
 		{
@@ -254,6 +255,14 @@ class TrashScaler
 	// rescale all windows
 	public function rescale()
 	{
+		// tweak debug window for better visibility
+		if (_root['debugwindow'] != null)
+		{
+			_root['debugwindow']._xscale = 150;
+			_root['debugwindow']._yscale = 150;
+			_root['debugwindow']._alpha = 200;
+		}
+		
 		for (var i: Number = 0; i < windows.length; i++)
 		{
 			var w = windows[i];
@@ -270,7 +279,33 @@ class TrashScaler
 
 			_root[w.id]._xscale = w.scale;
 			_root[w.id]._yscale = w.scale;
+
+			// top bar-specific tweaks - scaling the window moves stuff out of the visible area
+			if (w.id == 'mainmenuwindow')
+			{
+				var mod: Number = w.scale / 100;
+				var edge: Number = Stage.width / mod;
+
+				// go right to left, setting positions
+				edge = setTopBarPosition('m_LockIconContainer', mod, edge);
+				edge = setTopBarPosition('m_FPSIconContainer', mod, edge);
+				edge = setTopBarPosition('m_MailIconContainer', mod, edge);
+				edge = setTopBarPosition('m_ClockIconContainer', mod, edge);
+				edge = setTopBarPosition('m_DownloadingIconContainer', mod, edge);
+
+				// scale compass and reposition it
+				_root['compass']._xscale = w.scale;
+				_root['compass']._yscale = w.scale;
+				_root['compass']._x = Stage.width / 2 - _root['compass']._width / 2;
+			}
 		}
+	}
+	
+	static function setTopBarPosition(id: String, mod: Number, edge: Number): Number
+	{
+		var o = _root['mainmenuwindow'][id];
+		o._x = edge - o._width - 10;
+		return o._x;
 	}
 	
 

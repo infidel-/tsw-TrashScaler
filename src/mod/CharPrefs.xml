@@ -8,6 +8,8 @@
   <Value name="TrashScaler.computerpuzzle" value="100" />
   <Value name="TrashScaler.missionjournalwindow" value="100" />
   <Value name="TrashScaler.missionrewardcontroller" value="100" />
-	
+
+  <Value name="TrashScaler.mainmenuwindow" value="100" />
+
   <Archive name="TrashScaler_Cfg" />
 </Root>
