@@ -293,6 +293,13 @@ class TrashScaler
 				edge = setTopBarPosition('m_ClockIconContainer', mod, edge);
 				edge = setTopBarPosition('m_DownloadingIconContainer', mod, edge);
 
+				// SWL-specific
+				if (_root[w.id]['m_TokenIconContainer_1'] != null)
+				{
+					edge = setTopBarPosition('m_TokenIconContainer_1', mod, edge);
+					edge = setTopBarPosition('m_TokenIconContainer_2', mod, edge);
+				}
+
 				// scale compass and reposition it
 				_root['compass']._xscale = w.scale;
 				_root['compass']._yscale = w.scale;
