@@ -75,7 +75,7 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n\n\n\n\n';
+		textField.text = '\n\n\n\n\n\n\n\n\n\n';
 		
 		// button text format
 		textFormatButton = new TextFormat(
@@ -88,6 +88,7 @@ class TrashScaler
 			{ id: 'bank', name: 'Bank [SWL]' },
 			{ id: 'charactersheet2d', name: 'Character sheet [SWL]' },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
+			{ id: 'mediaplayer', name: 'Media (readables, etc)' },
 			{ id: 'missionjournalwindow', name: 'Mission Journal' },
 			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
 			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' },
