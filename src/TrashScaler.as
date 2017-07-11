@@ -75,7 +75,7 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n';
+		textField.text = '\n\n\n\n\n\n\n\n\n';
 		
 		// button text format
 		textFormatButton = new TextFormat(
@@ -84,6 +84,7 @@ class TrashScaler
 		// init scaler items
 		var windowTemplates = new Array(
 			{ id: 'achievement', name: 'Achievements and Lore' },
+			{ id: 'tradepost', name: 'Auction House' },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
 			{ id: 'missionjournalwindow', name: 'Mission Journal' },
 			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
@@ -119,12 +120,15 @@ class TrashScaler
 
 			// init object
 			var val:DistributedValue = DistributedValue.Create("TrashScaler." + tpl.id);
+			var scale: Number = val.GetValue();
+			if (scale == null)
+				scale = 100;
 			var w = {
 				id: tpl.id,
 				name: tpl.name,
 				btnDown: btnScaleDown,
 				btnUp: btnScaleUp,
-				scale: val.GetValue(),
+				scale: scale,
 				textField: tf
 			};
 			tf.text = w.name + ': ' + w.scale;
@@ -190,6 +194,8 @@ class TrashScaler
 				if (w.scale > 10)
 					w.scale -= 10;
 				w.textField.text = w.name + ': ' + w.scale;
+				var val:DistributedValue = DistributedValue.Create("TrashScaler." + w.id);
+				val.SetValue(w.scale);
 //				UtilsBase.PrintChatText("DOWN " + w.id);
 				return true;
 			}
@@ -273,17 +279,20 @@ class TrashScaler
 
 			// do not scale if it's already scaled correctly
 			// just in case low-level API does not catch that
+			// always resize mission rewards
 			if (_root[w.id]._xscale == w.scale &&
-				_root[w.id]._yscale == w.scale)
+				_root[w.id]._yscale == w.scale &&
+				w.id != 'missionrewardcontroller')
 				continue;
 
+			// basic resize for all
 			_root[w.id]._xscale = w.scale;
 			_root[w.id]._yscale = w.scale;
+			var mod: Number = w.scale / 100;
 
 			// top bar-specific tweaks - scaling the window moves stuff out of the visible area
 			if (w.id == 'mainmenuwindow')
 			{
-				var mod: Number = w.scale / 100;
 				var edge: Number = Stage.width / mod;
 
 				// go right to left, setting positions
@@ -305,9 +314,33 @@ class TrashScaler
 				_root['compass']._yscale = w.scale;
 				_root['compass']._x = Stage.width / 2 - _root['compass']._width / 2;
 			}
+
+			// special resize/center for mission reward windows
+			else if (w.id == 'missionrewardcontroller')
+			{
+				var rewardWindows: Array = _root[w.id].m_RewardWindows;
+				for (var j: Number = 0; j < rewardWindows.length; j++)
+				{
+					var ww: MovieClip = rewardWindows[j];
+					ww._x = (Stage.width / mod - ww._width) / 2;
+					ww._y = (Stage.height / mod - ww._height) / 2;
+				}
+			}
 		}
 	}
-	
+
+
+	// center given window
+	static function centerWindow(w: MovieClip)
+	{
+		w._x = Stage.width / 2 - w._width / 2;
+		w._y = Stage.height / 2 - w._height / 2;
+		UtilsBase.PrintChatText('pos:' + w._x + ',' + w._y +
+			' sz:' + w._width + ',' + w._height);
+	}
+
+
+	// helper for laying out top bar right icons
 	static function setTopBarPosition(id: String, mod: Number, edge: Number): Number
 	{
 		var o = _root['mainmenuwindow'][id];
