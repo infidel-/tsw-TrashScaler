@@ -11,6 +11,9 @@
 
   <Value name="TrashScaler.mainmenuwindow" value="100" />
   <Value name="TrashScaler.tradepost" value="100" />
+  <Value name="TrashScaler.bank" value="100" />
+  <Value name="TrashScaler.charactersheet2d" value="100" />
+  <Value name="TrashScaler.itemupgrade" value="100" />
 
   <Archive name="TrashScaler_Cfg" />
 </Root>

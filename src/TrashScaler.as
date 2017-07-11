@@ -85,10 +85,13 @@ class TrashScaler
 		var windowTemplates = new Array(
 			{ id: 'achievement', name: 'Achievements and Lore' },
 			{ id: 'tradepost', name: 'Auction House' },
+			{ id: 'bank', name: 'Bank [SWL]' },
+			{ id: 'charactersheet2d', name: 'Character sheet [SWL]' },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
 			{ id: 'missionjournalwindow', name: 'Mission Journal' },
 			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
-			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' }
+			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' },
+			{ id: 'itemupgrade', name: 'Upgrade window [SWL]' }
 		);
 		for (var i: Number = 0; i < windowTemplates.length; i++)
 		{
