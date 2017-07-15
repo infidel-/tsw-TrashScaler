@@ -292,7 +292,8 @@ class TrashScaler
 			if (win._xscale == w.scale &&
 				win._yscale == w.scale &&
 				w.id != 'missionrewardcontroller' &&
-				w.id != 'mediaplayer')
+				w.id != 'mediaplayer' &&
+				w.id != 'mainmenuwindow')
 				continue;
 
 			// basic resize for all
@@ -305,12 +306,19 @@ class TrashScaler
 			{
 				var edge: Number = Stage.width / mod;
 
+				// fix minimap edit mask
+				var o = _root['mainmenuwindow']['m_MinimapEditModeMask'];
+				o._x = edge - o._width;
+				o._xscale = 260 / mod;
+				o._yscale = 260 / mod;
+
 				// go right to left, setting positions
 				edge = setTopBarPosition('m_LockIconContainer', mod, edge);
 				edge = setTopBarPosition('m_FPSIconContainer', mod, edge);
 				edge = setTopBarPosition('m_MailIconContainer', mod, edge);
 				edge = setTopBarPosition('m_ClockIconContainer', mod, edge);
 				edge = setTopBarPosition('m_DownloadingIconContainer', mod, edge);
+
 
 				// SWL-specific
 				if (_root[w.id]['m_TokenIconContainer_1'] != null)
