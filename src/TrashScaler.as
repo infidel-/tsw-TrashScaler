@@ -282,17 +282,22 @@ class TrashScaler
 			if (_root[w.id] == null || _root[w.id]._xscale == null)
 				continue;
 
+			var win: MovieClip = _root[w.id];
+			if (w.id == 'mediaplayer')
+				win = win['m_Window'];
+
 			// do not scale if it's already scaled correctly
 			// just in case low-level API does not catch that
 			// always resize mission rewards
-			if (_root[w.id]._xscale == w.scale &&
-				_root[w.id]._yscale == w.scale &&
-				w.id != 'missionrewardcontroller')
+			if (win._xscale == w.scale &&
+				win._yscale == w.scale &&
+				w.id != 'missionrewardcontroller' &&
+				w.id != 'mediaplayer')
 				continue;
 
 			// basic resize for all
-			_root[w.id]._xscale = w.scale;
-			_root[w.id]._yscale = w.scale;
+			win._xscale = w.scale;
+			win._yscale = w.scale;
 			var mod: Number = w.scale / 100;
 
 			// top bar-specific tweaks - scaling the window moves stuff out of the visible area
@@ -330,6 +335,17 @@ class TrashScaler
 					ww._x = (Stage.width / mod - ww._width) / 2;
 					ww._y = (Stage.height / mod - ww._height) / 2;
 				}
+			}
+
+			// always center media player
+			else if (w.id == 'mediaplayer')
+			{
+				win._x = (Stage.width - win._width) / 2;
+				win._y = (Stage.height - win._height) / 2;
+				if (win._x < 10)
+					win._x = 10;
+				if (win._y < 10)
+					win._y = 10;
 			}
 		}
 	}
