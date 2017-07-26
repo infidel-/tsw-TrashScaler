@@ -26,7 +26,7 @@ class TrashScaler
 		cont = swfRoot.createEmptyMovieClip("trashScalerContainer",
 			swfRoot.getNextHighestDepth());
 		var tt = cont.createTextField("trashScalerText", 
-			cont.getNextHighestDepth(), 0, 0, 310, 200);
+			cont.getNextHighestDepth(), 0, 0, 330, 200);
 		var t: TextField = tt;
 		cont.backgroundColor = 0x000000;
 		cont.background = true;
@@ -83,19 +83,19 @@ class TrashScaler
 
 		// init scaler items
 		var windowTemplates = new Array(
-			{ id: 'skillhivesimple', name: '[SWL] Abilities' },
-			{ id: 'achievement', name: 'Achievements and Lore' },
-			{ id: 'tradepost', name: 'Auction House' },
-			{ id: 'bank', name: '[SWL] Bank' },
-			{ id: 'challengejournal', name: '[TSW] Challenge Journal' },
-			{ id: 'charactersheet2d', name: '[SWL] Character Sheet' },
-			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
-			{ id: 'mediaplayer', name: 'Media (readables, etc)' },
-			{ id: 'missionjournalwindow', name: 'Mission Journal' },
-			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
-			{ id: 'petinventory', name: 'Pets & Sprints' },
-			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' },
-			{ id: 'itemupgrade', name: '[SWL] Upgrade window' }
+			{ id: 'skillhivesimple', name: '[SWL] Abilities', canCenter: false },
+			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
+			{ id: 'tradepost', name: 'Auction House', canCenter: false },
+			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
+			{ id: 'challengejournal', name: '[TSW] Challenge Journal', canCenter: false },
+			{ id: 'charactersheet2d', name: '[SWL] Character Sheet', canCenter: false },
+			{ id: 'computerpuzzle', name: 'Computer GHOST interface', canCenter: false },
+			{ id: 'mediaplayer', name: 'Media (readables, etc)', canCenter: true },
+			{ id: 'missionjournalwindow', name: 'Mission Journal', canCenter: false },
+			{ id: 'missionrewardcontroller', name: 'Mission Rewards', canCenter: true },
+			{ id: 'petinventory', name: 'Pets & Sprints', canCenter: false },
+			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu', canCenter: false },
+			{ id: 'itemupgrade', name: '[SWL] Upgrade window', canCenter: false }
 		);
 		for (var i: Number = 0; i < windowTemplates.length; i++)
 		{
@@ -105,7 +105,7 @@ class TrashScaler
 			var ttf = cont.createTextField(tpl.id + "Text", 
 				cont.getNextHighestDepth(), 0, 0, 80, 20);
 			var tf: TextField = ttf;
-			tf._x = 40;
+			tf._x = 59;
 			tf._y = i * 21;
 			tf._alpha = 80;
 			tf.autoSize = "left";
@@ -118,12 +118,19 @@ class TrashScaler
 			tf._visible = vis;
 
 			// create all buttons
+			var valCenter:DistributedValue = DistributedValue.Create("TrashScaler." + tpl.id + '.center');
 			var btnScaleDown = createButton(tpl.id + 'BtnScaleDown', '-',
 				5, i * 21);
 			var btnScaleUp = createButton(tpl.id + 'BtnScaleUp', '+',
 				21, i * 21);
+			var btnCenter = null;
+			if (tpl.canCenter)
+				btnCenter = createButton(tpl.id + 'BtnCenter', (valCenter.GetValue() ? "C1" : "C0"),
+					37, i * 21);
 			btnScaleDown._visible = vis;
 			btnScaleUp._visible = vis;
+			if (btnCenter != null)
+				btnCenter._visible = vis;
 
 			// init object
 			var val:DistributedValue = DistributedValue.Create("TrashScaler." + tpl.id);
@@ -135,6 +142,7 @@ class TrashScaler
 				name: tpl.name,
 				btnDown: btnScaleDown,
 				btnUp: btnScaleUp,
+				btnCenter: btnCenter,
 				scale: scale,
 				textField: tf
 			};
@@ -144,7 +152,7 @@ class TrashScaler
 		
 		// minimize button
 		btnMinimize = createButton('btnMinimize',
-			(vis ? 'MINIMIZE' : 'TRS'), 100, windows.length * 21);
+			(vis ? 'MINIMIZE' : 'TRS'), 130, windows.length * 21);
 		
 		// mouse events
 		cont.onRelease = onRelease;
@@ -206,6 +214,14 @@ class TrashScaler
 //				UtilsBase.PrintChatText("DOWN " + w.id);
 				return true;
 			}
+			else if (w.btnCenter != null && w.btnCenter.hitTest(_root._xmouse, _root._ymouse, true))
+			{
+				var tf = w.btnCenter[w.id + 'BtnCenterText'];
+				var val:DistributedValue = DistributedValue.Create("TrashScaler." + w.id + ".center");
+				var cur: Boolean = val.GetValue();
+				val.SetValue(!cur);
+				tf.text = (!cur ? "C1" : "C0");
+			}
 		}
 
 		// minimize button
@@ -220,6 +236,8 @@ class TrashScaler
 				var w = windows[i];
 				w.btnUp._visible = vis;
 				w.btnDown._visible = vis;
+				if (w.btnCenter != null)
+					w.btnCenter._visible = vis;
 				w.textField._visible = vis;
 			}
 			textField._visible = vis;
@@ -303,6 +321,9 @@ class TrashScaler
 			win._yscale = w.scale;
 			var mod: Number = w.scale / 100;
 
+			var val:DistributedValue = DistributedValue.Create("TrashScaler." + w.id + ".center");
+			var doCenter: Boolean = val.GetValue();
+
 			// top bar-specific tweaks - scaling the window moves stuff out of the visible area
 			if (w.id == 'mainmenuwindow')
 			{
@@ -336,7 +357,7 @@ class TrashScaler
 			}
 
 			// special resize/center for mission reward windows
-			else if (w.id == 'missionrewardcontroller')
+			else if (w.id == 'missionrewardcontroller' && doCenter)
 			{
 				var rewardWindows: Array = _root[w.id].m_RewardWindows;
 				for (var j: Number = 0; j < rewardWindows.length; j++)
@@ -348,7 +369,7 @@ class TrashScaler
 			}
 
 			// always center media player
-			else if (w.id == 'mediaplayer')
+			else if (w.id == 'mediaplayer' && doCenter)
 			{
 				win._x = (Stage.width - win._width) / 2;
 				win._y = (Stage.height - win._height) / 2;
