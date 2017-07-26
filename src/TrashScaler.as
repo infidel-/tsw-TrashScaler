@@ -75,7 +75,7 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n\n\n\n\n\n\n';
+		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n';
 		
 		// button text format
 		textFormatButton = new TextFormat(
@@ -87,11 +87,13 @@ class TrashScaler
 			{ id: 'achievement', name: 'Achievements and Lore' },
 			{ id: 'tradepost', name: 'Auction House' },
 			{ id: 'bank', name: '[SWL] Bank' },
-			{ id: 'charactersheet2d', name: '[SWL] Character sheet' },
+			{ id: 'challengejournal', name: '[TSW] Challenge Journal' },
+			{ id: 'charactersheet2d', name: '[SWL] Character Sheet' },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface' },
 			{ id: 'mediaplayer', name: 'Media (readables, etc)' },
 			{ id: 'missionjournalwindow', name: 'Mission Journal' },
 			{ id: 'missionrewardcontroller', name: 'Mission Rewards' },
+			{ id: 'petinventory', name: 'Pets & Sprints' },
 			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu' },
 			{ id: 'itemupgrade', name: '[SWL] Upgrade window' }
 		);

@@ -17,6 +17,8 @@
   <Value name="TrashScaler.mediaplayer" value="100" />
 
   <Value name="TrashScaler.skillhivesimple" value="100" />
+  <Value name="TrashScaler.challengejournal" value="100" />
+  <Value name="TrashScaler.petinventory" value="100" />
 
   <Archive name="TrashScaler_Cfg" />
 </Root>
