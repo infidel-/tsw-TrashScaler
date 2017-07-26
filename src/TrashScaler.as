@@ -2,7 +2,11 @@ import com.GameInterface.UtilsBase;
 import com.GameInterface.DistributedValue;
 import com.Utils.LDBFormat;
 import com.Utils.Point;
-
+/*
+import com.GameInterface.Tooltip.TooltipManager;
+import com.GameInterface.Tooltip.TooltipData;
+import com.GameInterface.Tooltip.TooltipInterface;
+*/
 
 class TrashScaler
 {
@@ -15,6 +19,8 @@ class TrashScaler
 	public static var yDrag: Number;
 	public static var btnMinimize: MovieClip;
 	public static var textMinimize: TextField;
+	public static var tooltip: TextField;
+//    public static var m_Tooltip:TooltipInterface;
 	
 	public static var windows: Array;
 	
@@ -75,11 +81,26 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n';
+		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
 		
 		// button text format
 		textFormatButton = new TextFormat(
 			"lib.Aller.ttf", 16, 0xBBFFFF, true, false, false);
+
+		// tooltip text field
+		var tooltf = cont.createTextField("TooltipText", 
+			cont.getNextHighestDepth(), 0, 0, 80, 20);
+		tooltip = tooltf;
+		tooltip._alpha = 80;
+		tooltip.autoSize = "left";
+		tooltip.embedFonts = true;
+		tooltip.backgroundColor = 0x000000;
+		tooltip.background = true;
+		tooltip.setNewTextFormat(format);
+		tooltip._width = tooltip.textWidth;
+		tooltip._visible = vis;
+		tooltip.text = "Tooltip text!";
+		tooltip._visible = vis;
 
 		// init scaler items
 		var windowTemplates = new Array(
@@ -106,7 +127,7 @@ class TrashScaler
 				cont.getNextHighestDepth(), 0, 0, 80, 20);
 			var tf: TextField = ttf;
 			tf._x = 59;
-			tf._y = i * 21;
+			tf._y = (i + 1) * 21;
 			tf._alpha = 80;
 			tf.autoSize = "left";
 			tf.html = true;
@@ -120,13 +141,13 @@ class TrashScaler
 			// create all buttons
 			var valCenter:DistributedValue = DistributedValue.Create("TrashScaler." + tpl.id + '.center');
 			var btnScaleDown = createButton(tpl.id + 'BtnScaleDown', '-',
-				5, i * 21);
+				5, (i + 1) * 21);
 			var btnScaleUp = createButton(tpl.id + 'BtnScaleUp', '+',
-				21, i * 21);
+				21, (i + 1) * 21);
 			var btnCenter = null;
 			if (tpl.canCenter)
 				btnCenter = createButton(tpl.id + 'BtnCenter', (valCenter.GetValue() ? "C1" : "C0"),
-					37, i * 21);
+					37, (i + 1) * 21);
 			btnScaleDown._visible = vis;
 			btnScaleUp._visible = vis;
 			if (btnCenter != null)
@@ -152,7 +173,7 @@ class TrashScaler
 		
 		// minimize button
 		btnMinimize = createButton('btnMinimize',
-			(vis ? 'MINIMIZE' : 'TRS'), 130, windows.length * 21);
+			(vis ? 'MINIMIZE' : 'TRS'), 130, (windows.length + 1) * 21);
 		
 		// mouse events
 		cont.onRelease = onRelease;
@@ -221,6 +242,17 @@ class TrashScaler
 				var cur: Boolean = val.GetValue();
 				val.SetValue(!cur);
 				tf.text = (!cur ? "C1" : "C0");
+
+/*
+	            var tooltipData:TooltipData = new TooltipData();
+				tooltipData.m_Descriptions.push('tooltip!');
+				tooltipData.m_Padding = 4;
+				tooltipData.m_MaxWidth = 200;
+				m_Tooltip = TooltipManager.GetInstance().ShowTooltip( w.btnCenter, TooltipInterface.e_OrientationVertical, 0, tooltipData );
+				if (m_Tooltip != null)
+					m_Tooltip.Close();
+*/
+				return true;
 			}
 		}
 
@@ -241,12 +273,39 @@ class TrashScaler
 				w.textField._visible = vis;
 			}
 			textField._visible = vis;
+			tooltip._visible = vis;
 			textMinimize.text = (vis ? 'MINIMIZE' : 'TRS');
 
 			return true;
 		}
 		
 		return false;
+	}
+	
+	
+	// check for button mouseovers
+	static function onOverButton()
+	{
+		tooltip.text = '';
+
+		// check if mouse is over any buttons
+		for (var i: Number = 0; i < windows.length; i++)
+		{
+			var w = windows[i];
+			if (w.btnUp.hitTest(_root._xmouse, _root._ymouse, true))
+			{
+				tooltip.text = "Increase scale";
+			}
+			else if (w.btnDown.hitTest(_root._xmouse, _root._ymouse, true))
+			{
+				tooltip.text = "Decrease scale";
+			}
+			else if (w.btnCenter != null && w.btnCenter.hitTest(_root._xmouse, _root._ymouse, true))
+			{
+				var tf = w.btnCenter[w.id + 'BtnCenterText'];
+				tooltip.text = (tf.text == 'C0' ? "Enable auto-center" : "Disable auto-center");
+			}
+		}
 	}
 	
 	// pressing window and buttons
@@ -261,6 +320,9 @@ class TrashScaler
 	// drag window
 	function onMouseMove(id: Number, x: Number, y: Number)
 	{
+		// check for button mouseovers
+		onOverButton();
+
 		if (!isDrag)
 			return;
 
@@ -271,8 +333,9 @@ class TrashScaler
 	// stop dragging
 	function onRelease()
 	{
-		// check for button presses
-		onPressButton();
+		// check for button presses and reset tooltip
+		if (onPressButton())
+			onOverButton();
 
 		isDrag = false;
 
