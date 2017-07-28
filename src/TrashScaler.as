@@ -99,7 +99,7 @@ class TrashScaler
 		tooltip.setNewTextFormat(format);
 		tooltip._width = tooltip.textWidth;
 		tooltip._visible = vis;
-		tooltip.text = "Tooltip text!";
+		tooltip.text = "";
 		tooltip._visible = vis;
 
 		// init scaler items
@@ -108,7 +108,7 @@ class TrashScaler
 			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
 			{ id: 'tradepost', name: 'Auction House', canCenter: false },
 			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
-			{ id: 'challengejournal', name: '[TSW] Challenge Journal', canCenter: false },
+			{ id: 'challengejournal', name: 'Challenge Journal', canCenter: false },
 			{ id: 'charactersheet2d', name: '[SWL] Character Sheet', canCenter: false },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface', canCenter: false },
 			{ id: 'mediaplayer', name: 'Media (readables, etc)', canCenter: true },
