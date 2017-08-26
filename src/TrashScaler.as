@@ -366,8 +366,6 @@ class TrashScaler
 				continue;
 
 			var win: MovieClip = _root[w.id];
-			if (w.id == 'mediaplayer')
-				win = win['m_Window'];
 
 			// do not scale if it's already scaled correctly
 			// just in case low-level API does not catch that
@@ -379,9 +377,12 @@ class TrashScaler
 				w.id != 'mainmenuwindow')
 				continue;
 
-			// basic resize for all
-			win._xscale = w.scale;
-			win._yscale = w.scale;
+			// basic resize for all (except media player)
+			if (w.id != 'mediaplayer')
+			{
+				win._xscale = w.scale;
+				win._yscale = w.scale;
+			}
 			var mod: Number = w.scale / 100;
 
 			var val:DistributedValue = DistributedValue.Create("TrashScaler." + w.id + ".center");
@@ -431,15 +432,37 @@ class TrashScaler
 				}
 			}
 
-			// always center media player
-			else if (w.id == 'mediaplayer' && doCenter)
+			// special logic for media player windows
+			else if (w.id == 'mediaplayer')
 			{
-				win._x = (Stage.width - win._width) / 2;
-				win._y = (Stage.height - win._height) / 2;
-				if (win._x < 10)
-					win._x = 10;
-				if (win._y < 10)
-					win._y = 10;
+				// always center media player window
+				if (doCenter)
+				{
+					win = _root[w.id]['m_Window'];
+					win._x = (Stage.width - win._width) / 2;
+					win._y = (Stage.height - win._height) / 2;
+					if (win._x < 10)
+						win._x = 10;
+					if (win._y < 10)
+						win._y = 10;
+				}
+
+				win = _root[w.id]['m_Window']['m_Content']['m_ImageView'];
+				win._xscale = w.scale;
+				win._yscale = w.scale;
+				var width = win._width;
+				var height = win._height;
+
+				win = _root[w.id]['m_Window']['m_Background'];
+				win._width = width + 50;
+				win._height = height + 50;
+
+				win = _root[w.id]['m_Window']['m_CloseButton'];
+				win._x = width;
+
+				win = _root[w.id]['m_Window']['m_DropShadow'];
+				win._width = width + 80;
+				win._height = height + 80;
 			}
 		}
 	}
