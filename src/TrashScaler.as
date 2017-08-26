@@ -414,6 +414,12 @@ class TrashScaler
 					edge = setTopBarPosition('m_TokenIconContainer_2', mod, edge);
 				}
 
+				// meeehrPack compatibility
+				if (_root[w.id]['m_FriendsIconContainer'] != null)
+				{
+					edge = setTopBarPosition('m_FriendsIconContainer', mod, edge);
+				}
+
 				// scale compass and reposition it
 				_root['compass']._xscale = w.scale;
 				_root['compass']._yscale = w.scale;
