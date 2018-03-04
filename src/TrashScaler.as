@@ -81,7 +81,7 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
+		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
 		
 		// button text format
 		textFormatButton = new TextFormat(
@@ -106,6 +106,7 @@ class TrashScaler
 		var windowTemplates = new Array(
 			{ id: 'skillhivesimple', name: '[SWL] Abilities', canCenter: false },
 			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
+			{ id: 'agentsystem', name: '[SWL] Agent System', canCenter: false },
 			{ id: 'tradepost', name: 'Auction House', canCenter: false },
 			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
 			{ id: 'challengejournal', name: 'Challenge Journal', canCenter: false },

@@ -6,6 +6,7 @@
   <Value name="TrashScaler.minimized" value="false" />
 
   <Value name="TrashScaler.achievement" value="100" />
+  <Value name="TrashScaler.agentsystem" value="100" />
   <Value name="TrashScaler.computerpuzzle" value="100" />
   <Value name="TrashScaler.missionjournalwindow" value="100" />
   <Value name="TrashScaler.missionrewardcontroller" value="100" />
@@ -20,6 +21,7 @@
   <Value name="TrashScaler.petinventory" value="100" />
 
   <Value name="TrashScaler.achievement.center" value="false" />
+  <Value name="TrashScaler.agentsystem.center" value="false" />
   <Value name="TrashScaler.computerpuzzle.center" value="false" />
   <Value name="TrashScaler.missionjournalwindow.center" value="false" />
   <Value name="TrashScaler.missionrewardcontroller.center" value="true" />
