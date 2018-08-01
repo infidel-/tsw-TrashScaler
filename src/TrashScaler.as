@@ -29,6 +29,25 @@ class TrashScaler
 		isDrag = false;
 		windows = new Array();
 
+		var windowTemplates = new Array(
+			{ id: 'skillhivesimple', name: '[SWL] Abilities', canCenter: false },
+			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
+			{ id: 'agentsystem', name: '[SWL] Agent System', canCenter: false },
+			{ id: 'tradepost', name: 'Auction House', canCenter: false },
+			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
+			{ id: 'challengejournal', name: 'Challenge Journal', canCenter: false },
+			{ id: 'charactersheet2d', name: '[SWL] Character Sheet', canCenter: false },
+			{ id: 'computerpuzzle', name: 'Computer GHOST interface', canCenter: false },
+			{ id: 'mediaplayer', name: 'Media (readables, etc)', canCenter: true },
+			{ id: 'missionjournalwindow', name: 'Mission Journal', canCenter: false },
+			{ id: 'missionrewardcontroller', name: 'Mission Rewards', canCenter: true },
+			{ id: 'petinventory', name: 'Pets & Sprints', canCenter: false },
+			{ id: 'regionteleport', name: '[SWL] Teleport', canCenter: false },
+			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu', canCenter: false },
+			{ id: 'itemupgrade', name: '[SWL] Upgrade window', canCenter: false },
+			{ id: 'shopcontroller', name: 'Vendor', canCenter: false }
+		);
+
 		cont = swfRoot.createEmptyMovieClip("trashScalerContainer",
 			swfRoot.getNextHighestDepth());
 		var tt = cont.createTextField("trashScalerText", 
@@ -81,7 +100,12 @@ class TrashScaler
 			"lib.Aller.ttf", 18, 0xCCCCCC, true, false,
 			false);
 		t.setNewTextFormat(format);
-		textField.text = '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n';
+
+		// hack: make a big enough window
+		var s = '';
+		for (var i: Number = 0; i <= windowTemplates.length; i++)
+		    s += '\n';
+		textField.text = s;
 		
 		// button text format
 		textFormatButton = new TextFormat(
@@ -103,22 +127,6 @@ class TrashScaler
 		tooltip._visible = vis;
 
 		// init scaler items
-		var windowTemplates = new Array(
-			{ id: 'skillhivesimple', name: '[SWL] Abilities', canCenter: false },
-			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
-			{ id: 'agentsystem', name: '[SWL] Agent System', canCenter: false },
-			{ id: 'tradepost', name: 'Auction House', canCenter: false },
-			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
-			{ id: 'challengejournal', name: 'Challenge Journal', canCenter: false },
-			{ id: 'charactersheet2d', name: '[SWL] Character Sheet', canCenter: false },
-			{ id: 'computerpuzzle', name: 'Computer GHOST interface', canCenter: false },
-			{ id: 'mediaplayer', name: 'Media (readables, etc)', canCenter: true },
-			{ id: 'missionjournalwindow', name: 'Mission Journal', canCenter: false },
-			{ id: 'missionrewardcontroller', name: 'Mission Rewards', canCenter: true },
-			{ id: 'petinventory', name: 'Pets & Sprints', canCenter: false },
-			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu', canCenter: false },
-			{ id: 'itemupgrade', name: '[SWL] Upgrade window', canCenter: false }
-		);
 		for (var i: Number = 0; i < windowTemplates.length; i++)
 		{
 			var tpl = windowTemplates[i];

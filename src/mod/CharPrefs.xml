@@ -19,6 +19,8 @@
   <Value name="TrashScaler.skillhivesimple" value="100" />
   <Value name="TrashScaler.challengejournal" value="100" />
   <Value name="TrashScaler.petinventory" value="100" />
+  <Value name="TrashScaler.shopcontroller" value="100" />
+  <Value name="TrashScaler.regionteleport" value="100" />
 
   <Value name="TrashScaler.achievement.center" value="false" />
   <Value name="TrashScaler.agentsystem.center" value="false" />
@@ -34,6 +36,8 @@
   <Value name="TrashScaler.skillhivesimple.center" value="false" />
   <Value name="TrashScaler.challengejournal.center" value="false" />
   <Value name="TrashScaler.petinventory.center" value="false" />
+  <Value name="TrashScaler.shopcontroller.center" value="false" />
+  <Value name="TrashScaler.regionteleport.center" value="false" />
 
   <Archive name="TrashScaler_Cfg" />
 </Root>
