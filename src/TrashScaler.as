@@ -19,6 +19,8 @@ class TrashScaler
 	public static var yDrag: Number;
 	public static var btnMinimize: MovieClip;
 	public static var textMinimize: TextField;
+	public static var btnMinimizeTop: MovieClip;
+	public static var textMinimizeTop: TextField;
 	public static var tooltip: TextField;
 //    public static var m_Tooltip:TooltipInterface;
 	
@@ -32,18 +34,22 @@ class TrashScaler
 		var windowTemplates = new Array(
 			{ id: 'skillhivesimple', name: '[SWL] Abilities', canCenter: false },
 			{ id: 'achievement', name: 'Achievements and Lore', canCenter: false },
+			{ id: 'groupfinder', name: 'Activity Finder', canCenter: false },
 			{ id: 'agentsystem', name: '[SWL] Agent System', canCenter: false },
 			{ id: 'tradepost', name: 'Auction House', canCenter: false },
 			{ id: 'bank', name: '[SWL] Bank', canCenter: false },
 			{ id: 'challengejournal', name: 'Challenge Journal', canCenter: false },
 			{ id: 'charactersheet2d', name: '[SWL] Character Sheet', canCenter: false },
 			{ id: 'computerpuzzle', name: 'Computer GHOST interface', canCenter: false },
+			{ id: 'dressingroom', name: '[SWL] Dressing Room', canCenter: false },
+			{ id: 'emotes', name: '[SWL] Emotes', canCenter: false },
 			{ id: 'mediaplayer', name: 'Media (readables, etc)', canCenter: true },
 			{ id: 'missionjournalwindow', name: 'Mission Journal', canCenter: false },
 			{ id: 'missionrewardcontroller', name: 'Mission Rewards', canCenter: true },
 			{ id: 'petinventory', name: 'Pets & Sprints', canCenter: false },
 			{ id: 'regionteleport', name: '[SWL] Teleport', canCenter: false },
 			{ id: 'mainmenuwindow', name: 'Top Bar / Main Menu', canCenter: false },
+			{ id: 'trashscaler\\trashscaler', name: 'TrashScaler Window', canCenter: false },
 			{ id: 'itemupgrade', name: '[SWL] Upgrade window', canCenter: false },
 			{ id: 'shopcontroller', name: 'Vendor', canCenter: false }
 		);
@@ -92,7 +98,9 @@ class TrashScaler
 		
 		// set visibility
 		var visval:DistributedValue = DistributedValue.Create("TrashScaler.minimized");
+		var visvalTop:DistributedValue = DistributedValue.Create("TrashScaler.minimizedTop");
 		var vis = visval.GetValue();
+		var visTop = visvalTop.GetValue();
 		textField._visible = vis;
 		
 		// text format
@@ -183,6 +191,12 @@ class TrashScaler
 		// minimize button
 		btnMinimize = createButton('btnMinimize',
 			(vis ? 'MINIMIZE' : 'TRS'), 130, (windows.length + 1) * 21);
+		btnMinimizeTop = createButton('btnMinimizeTop',
+			(vis ? 'MINIMIZE' : 'TRS'), 130, -20);
+		if (visTop && !vis)
+			btnMinimize._visible = false;
+		else if (!visTop && !vis)
+			btnMinimizeTop._visible = false;
 		
 		// mouse events
 		cont.onRelease = onRelease;
@@ -213,6 +227,8 @@ class TrashScaler
 		
 		if (name == 'btnMinimize')
 			textMinimize = t;
+		else if (name == 'btnMinimizeTop')
+			textMinimizeTop = t;
 		
 		return btn;
 	}
@@ -266,12 +282,16 @@ class TrashScaler
 		}
 
 		// minimize button
-		if (btnMinimize.hitTest(_root._xmouse, _root._ymouse, true))
+		var bottomHit = btnMinimize.hitTest(_root._xmouse, _root._ymouse, true);
+		var topHit = btnMinimizeTop.hitTest(_root._xmouse, _root._ymouse, true);
+		if (bottomHit || topHit)
 		{
 			var val:DistributedValue = DistributedValue.Create("TrashScaler.minimized");
 			val.SetValue(!val.GetValue());
 			var vis = val.GetValue();
-			
+			var valTop:DistributedValue = DistributedValue.Create("TrashScaler.minimizedTop");
+			valTop.SetValue(topHit);
+
 			for (var i: Number = 0; i < windows.length; i++)
 			{
 				var w = windows[i];
@@ -284,6 +304,10 @@ class TrashScaler
 			textField._visible = vis;
 			tooltip._visible = vis;
 			textMinimize.text = (vis ? 'MINIMIZE' : 'TRS');
+			textMinimizeTop.text = (vis ? 'MINIMIZE' : 'TRS');
+			if (topHit)
+			  btnMinimize._visible = vis;
+			else btnMinimizeTop._visible = vis;
 
 			return true;
 		}
@@ -365,7 +389,7 @@ class TrashScaler
 			_root['debugwindow']._yscale = 150;
 			_root['debugwindow']._alpha = 200;
 		}
-		
+
 		for (var i: Number = 0; i < windows.length; i++)
 		{
 			var w = windows[i];
@@ -386,8 +410,8 @@ class TrashScaler
 				w.id != 'mainmenuwindow')
 				continue;
 
-			// basic resize for all (except media player)
-			if (w.id != 'mediaplayer')
+			// basic resize for all (except media player & dressing room)
+			if (w.id != 'mediaplayer' && w.id != 'dressingroom')
 			{
 				win._xscale = w.scale;
 				win._yscale = w.scale;
@@ -478,6 +502,32 @@ class TrashScaler
 				win = _root[w.id]['m_Window']['m_DropShadow'];
 				win._width = width + 80;
 				win._height = height + 80;
+			}
+
+			// special logic for dressing room windows
+			else if (w.id == 'dressingroom')
+			{
+				// rescale left panel and center
+				win = _root[w.id]['m_LeftPanel'];
+				win._xscale = w.scale;
+				win._yscale = w.scale;
+				win._x = (Stage.width / 2 - win._width) / 2;
+				win._y = (Stage.height - win._height) / 2;
+				if (win._x < 10)
+					win._x = 10;
+				if (win._y < 10)
+					win._y = 10;
+
+				// rescale right panel and center
+				win = _root[w.id]['m_RightPanel'];
+				win._xscale = w.scale;
+				win._yscale = w.scale;
+				win._x = Stage.width / 2 + (Stage.width / 2 - win._width) / 2;
+				win._y = (Stage.height - win._height) / 2;
+				if (win._x < 10)
+					win._x = 10;
+				if (win._y < 10)
+					win._y = 10;
 			}
 		}
 	}

@@ -4,6 +4,7 @@
   <Value name="TrashScaler.x" value="-1" />
   <Value name="TrashScaler.y" value="-1" />
   <Value name="TrashScaler.minimized" value="false" />
+  <Value name="TrashScaler.minimizedTop" value="false" />
 
   <Value name="TrashScaler.achievement" value="100" />
   <Value name="TrashScaler.agentsystem" value="100" />
@@ -21,6 +22,10 @@
   <Value name="TrashScaler.petinventory" value="100" />
   <Value name="TrashScaler.shopcontroller" value="100" />
   <Value name="TrashScaler.regionteleport" value="100" />
+  <Value name="TrashScaler.groupfinder" value="100" />
+  <Value name="TrashScaler.dressingroom" value="100" />
+  <Value name="TrashScaler.emotes" value="100" />
+  <Value name="TrashScaler.trashscaler\\trashscaler" value="100" />
 
   <Value name="TrashScaler.achievement.center" value="false" />
   <Value name="TrashScaler.agentsystem.center" value="false" />
@@ -38,6 +43,10 @@
   <Value name="TrashScaler.petinventory.center" value="false" />
   <Value name="TrashScaler.shopcontroller.center" value="false" />
   <Value name="TrashScaler.regionteleport.center" value="false" />
+  <Value name="TrashScaler.groupfinder.center" value="false" />
+  <Value name="TrashScaler.dressingroom.center" value="false" />
+  <Value name="TrashScaler.emotes.center" value="false" />
+  <Value name="TrashScaler.trashscaler\\trashscaler.center" value="false" />
 
   <Archive name="TrashScaler_Cfg" />
 </Root>
